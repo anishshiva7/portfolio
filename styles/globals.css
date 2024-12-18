@@ -3,19 +3,150 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-start-rgb));
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Loading Glitch Effect */
+.loading-glitch {
+  position: relative;
+  animation: glitch 1s infinite;
+}
+
+.loading-glitch::before,
+.loading-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.loading-glitch::before {
+  left: 2px;
+  text-shadow: -2px 0 #ff00ff;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 5s infinite linear alternate-reverse;
+}
+
+.loading-glitch::after {
+  left: -2px;
+  text-shadow: -2px 0 #00ff00;
+  clip: rect(44px, 450px, 56px, 0);
+  animation: glitch-anim 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch {
+  2%, 64% {
+    transform: translate(2px, 0) skew(0deg);
+  }
+  4%, 60% {
+    transform: translate(-2px, 0) skew(0deg);
+  }
+  62% {
+    transform: translate(0, 0) skew(5deg);
+  }
+}
+
+@keyframes glitch-anim {
+  0% {
+    clip: rect(31px, 9999px, 94px, 0);
+  }
+  20% {
+    clip: rect(62px, 9999px, 82px, 0);
+  }
+  40% {
+    clip: rect(35px, 9999px, 56px, 0);
+  }
+  60% {
+    clip: rect(93px, 9999px, 100px, 0);
+  }
+  80% {
+    clip: rect(58px, 9999px, 71px, 0);
+  }
+  100% {
+    clip: rect(24px, 9999px, 87px, 0);
+  }
+}
+
+/* Loading Text Animation */
+.loading-text {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-text::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  animation: typewriter 1s steps(40, end) forwards;
+}
+
+@keyframes typewriter {
+  to {
+    width: 0;
+  }
+}
+
+@keyframes glitchSlideIn {
+  0% {
+    transform: translateY(20px);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  20% {
+    clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%);
+  }
+  40% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  60% {
+    clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%);
+  }
+  80% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+  100% {
+    transform: translateY(0);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 0.5s linear;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
