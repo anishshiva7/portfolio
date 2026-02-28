@@ -1,4 +1,4 @@
-import { about, skills, type Skill } from '../data/content';
+import { about, skills } from '../data/content';
 import { type FC } from 'react';
 
 interface AboutSectionProps {
@@ -7,89 +7,75 @@ interface AboutSectionProps {
 
 const AboutSection: FC<AboutSectionProps> = ({ className = '' }) => {
   return (
-    <div className={`max-w-4xl mx-auto ${className}`}>
-      {/* Main title with stronger presence */}
-      <h1 className="text-5xl md:text-6xl font-bold mb-16 tracking-wider text-white loading-glitch glow-text">
-        {about.title}
-      </h1>
-      
-      {/* Introduction section with larger, clearer text */}
-      <div className="mb-16 space-y-8">
-        {about.introduction.map((text, index) => (
-          <p 
-            key={index} 
-            className="text-xl md:text-2xl font-medium leading-relaxed text-white/90 
-                       hover:text-white transition-colors tracking-wide"
-          >
-            {text}
-          </p>
-        ))}
-        
-        {/* Location and status with distinct styling */}
-        <div className="text-xl md:text-2xl font-medium tracking-wider text-white/80 
-                    hover:text-white/100 transition-colors pt-4 border-t border-white/20">
-          <p>{about.location}</p>
-          {about.status && <p>{about.status}</p>}
-        </div>
-      </div>
+    <section className={`mx-auto max-w-6xl px-2 py-10 ${className}`}>
+      <header className="reveal-up mb-12">
+        <span className="section-kicker">About</span>
+        <h1 className="mt-5 text-4xl font-extrabold leading-tight text-slate-50 md:text-6xl">
+          {about.title}
+        </h1>
+        <p className="mt-4 max-w-3xl text-lg text-slate-200/90">
+          {about.subtitle || 'Product-focused engineer — building reliable, elegant experiences.'}
+        </p>
+      </header>
 
-      {/* Skills grid with enhanced visibility */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-        {skills.map((category, index) => (
-          <div 
-            key={index}
-            className="space-y-6 transform transition-all duration-500"
-            style={{
-              transitionDelay: `${(index + 2) * 0.2}s`,
-              animation: 'fadeIn 0.5s ease-out forwards'
-            }}
-          >
-            {/* Category headers with better contrast */}
-            <h2 className="text-xl md:text-2xl font-bold tracking-wider text-white/90 glow-text-subtle">
-              {category.category}
-            </h2>
-            
-            {/* Skill items with improved visibility and interaction */}
-            <div className="space-y-3">
-              {category.items.map((item, i) => (
-                <div 
+      <div className="grid items-start gap-8 lg:grid-cols-3">
+        <div className="glass-panel interactive-card reveal-up space-y-6 rounded-2xl p-7 md:col-span-2">
+          {about.introduction.map((text, idx) => (
+            <p key={idx} className="text-base leading-relaxed text-slate-200 md:text-lg">
+              {text}
+            </p>
+          ))}
+
+          <div className="mt-8 grid gap-4 border-t border-white/10 pt-5 sm:grid-cols-2">
+            <div className="glass-panel-soft rounded-xl p-4">
+              <h3 className="text-xs uppercase tracking-[0.16em] text-slate-400">Location</h3>
+              <p className="mt-2 text-sm font-semibold text-slate-100">{about.location}</p>
+            </div>
+            {about.status && (
+              <div className="glass-panel-soft rounded-xl p-4">
+                <h3 className="text-xs uppercase tracking-[0.16em] text-slate-400">Status</h3>
+                <p className="mt-2 text-sm font-semibold text-slate-100">{about.status}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-4 border-t border-white/10 pt-5">
+            <h3 className="tech-chip text-[11px] uppercase tracking-[0.14em] text-zinc-200/80">
+              Craft + Discipline
+            </h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {about.additionalInfo.map((info, i) => (
+                <span
                   key={i}
-                  className="text-lg md:text-xl font-medium px-4 py-3 
-                           border border-white/20 hover:border-white/60
-                           bg-black/30 hover:bg-black/50
-                           text-white/80 hover:text-white
-                           transition-all duration-300 ease-in-out
-                           transform hover:translate-x-1
-                           hover:glow-text-subtle"
+                  className="rounded-md border border-zinc-300/20 bg-zinc-300/10 px-2.5 py-1 text-xs text-zinc-100/90"
                 >
-                  {item}
-                </div>
+                  {info}
+                </span>
               ))}
             </div>
           </div>
-        ))}
+        </div>
+
+        <aside className="space-y-5">
+          {skills.map((category, i) => (
+            <div key={i} className="glass-panel interactive-card reveal-up rounded-2xl p-5" style={{ animationDelay: `${i * 80}ms` }}>
+              <h4 className="text-sm font-semibold tracking-[0.09em] text-zinc-100">{category.category}</h4>
+              <div className="mt-4 grid grid-cols-2 gap-2">
+                {category.items.map((item, j) => (
+                  <span
+                    key={j}
+                    className="tech-chip inline-flex items-center justify-center rounded-md border border-zinc-300/20 bg-zinc-300/10 px-2.5 py-1.5 text-[11px] text-zinc-100 transition hover:-translate-y-0.5 hover:bg-zinc-300/15"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </aside>
       </div>
-    </div>
+    </section>
   );
 };
-
-// Add these classes to your global CSS
-const styles = `
-  .glow-text {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5),
-                 0 0 20px rgba(255, 255, 255, 0.3),
-                 0 0 30px rgba(255, 255, 255, 0.2);
-  }
-
-  .glow-text-subtle {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3),
-                 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-
-  .hover-glow:hover {
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4),
-                 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-`;
 
 export default AboutSection;

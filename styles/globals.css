@@ -1,152 +1,315 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+  --foreground-rgb: 234, 238, 236;
+  --muted-rgb: 174, 182, 179;
+  --panel-rgb: 13, 15, 15;
+  --panel-border-rgb: 94, 108, 103;
+  --accent-rgb: 118, 165, 150;
+  --accent-warm-rgb: 188, 196, 187;
+}
+
+html,
+body,
+#__next {
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: rgb(var(--background-start-rgb));
-  overflow-x: hidden;
   margin: 0;
-  padding: 0;
+  color: rgb(var(--foreground-rgb));
+  font-family: 'Manrope', 'Segoe UI', sans-serif;
+  background:
+    radial-gradient(circle at 18% 14%, rgba(111, 158, 145, 0.18), transparent 30%),
+    radial-gradient(circle at 78% 22%, rgba(224, 236, 229, 0.11), transparent 28%),
+    radial-gradient(circle at 84% 88%, rgba(62, 84, 79, 0.16), transparent 36%),
+    linear-gradient(160deg, #080a0a 0%, #121715 45%, #0a0d0c 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Loading Glitch Effect */
-.loading-glitch {
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.09;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.45) 0.6px, transparent 0.6px);
+  background-size: 2.4px 2.4px;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 62% 24%, rgba(255, 255, 255, 0.08), transparent 28%),
+    radial-gradient(circle at center, transparent 45%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+::selection {
+  background: rgba(184, 210, 200, 0.28);
+  color: rgb(244, 248, 246);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Sora', 'Manrope', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+p {
+  color: rgb(var(--muted-rgb));
+}
+
+.app-shell {
   position: relative;
-  animation: glitch 1s infinite;
 }
 
-.loading-glitch::before,
-.loading-glitch::after {
-  content: attr(data-text);
-  position: absolute;
+.app-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-shell::before,
+.app-shell::after {
+  content: '';
+  position: fixed;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.28;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app-shell::before {
+  top: -6rem;
+  right: -7rem;
+  background: rgba(113, 152, 141, 0.88);
+}
+
+.app-shell::after {
+  bottom: -9rem;
+  left: -5rem;
+  background: rgba(150, 171, 160, 0.78);
+}
+
+.app-shell::before,
+.app-shell::after {
+  mix-blend-mode: screen;
+}
+
+.app-shell {
+  isolation: isolate;
+}
+
+.app-shell::after {
+  box-shadow: 0 0 140px rgba(var(--accent-warm-rgb), 0.35);
+}
+
+.app-shell::before {
+  box-shadow: 0 0 120px rgba(var(--accent-rgb), 0.35);
+}
+
+.app-shell::after,
+.app-shell::before {
+  animation: driftGlow 12s ease-in-out infinite alternate;
+}
+
+.scroll-progress {
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  z-index: 80;
+  height: 2px;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgba(150, 190, 176, 0.9), rgba(227, 236, 232, 0.85));
+  box-shadow: 0 0 14px rgba(153, 190, 177, 0.45);
+  transition: transform 120ms ease-out;
 }
 
-.loading-glitch::before {
-  left: 2px;
-  text-shadow: -2px 0 #ff00ff;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 5s infinite linear alternate-reverse;
+.craft-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18;
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 88%, transparent 100%);
 }
 
-.loading-glitch::after {
-  left: -2px;
-  text-shadow: -2px 0 #00ff00;
-  clip: rect(44px, 450px, 56px, 0);
-  animation: glitch-anim 2s infinite linear alternate-reverse;
+.flash-bloom {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(circle at 64% 26%, rgba(235, 248, 241, 0.36), transparent 30%),
+    radial-gradient(circle at 38% 46%, rgba(170, 204, 191, 0.2), transparent 42%);
+  animation: cameraFlash 1200ms cubic-bezier(0.2, 0.8, 0.2, 1) 1 both;
 }
 
-@keyframes glitch {
-  2%, 64% {
-    transform: translate(2px, 0) skew(0deg);
-  }
-  4%, 60% {
-    transform: translate(-2px, 0) skew(0deg);
-  }
-  62% {
-    transform: translate(0, 0) skew(5deg);
-  }
+.glass-panel {
+  background:
+    linear-gradient(165deg, rgba(var(--panel-rgb), 0.92), rgba(12, 13, 16, 0.8)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.01) 0, rgba(255, 255, 255, 0.01) 2px, transparent 2px, transparent 8px);
+  border: 1px solid rgba(var(--panel-border-rgb), 0.3);
+  box-shadow:
+    0 24px 50px rgba(3, 9, 18, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
-@keyframes glitch-anim {
-  0% {
-    clip: rect(31px, 9999px, 94px, 0);
-  }
-  20% {
-    clip: rect(62px, 9999px, 82px, 0);
-  }
-  40% {
-    clip: rect(35px, 9999px, 56px, 0);
-  }
-  60% {
-    clip: rect(93px, 9999px, 100px, 0);
-  }
-  80% {
-    clip: rect(58px, 9999px, 71px, 0);
-  }
-  100% {
-    clip: rect(24px, 9999px, 87px, 0);
-  }
+.glass-panel-soft {
+  background: linear-gradient(160deg, rgba(20, 22, 28, 0.66), rgba(14, 15, 19, 0.52));
+  border: 1px solid rgba(var(--panel-border-rgb), 0.25);
 }
 
-/* Loading Text Animation */
-.loading-text {
+.tech-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(var(--accent-rgb), 0.4);
+  background: rgba(var(--accent-rgb), 0.11);
+  color: rgb(230, 234, 242);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-kicker::before {
+  content: '';
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: rgb(var(--accent-rgb));
+}
+
+.reveal-up {
+  animation: revealUp 0.6s ease both;
+}
+
+.interactive-card {
   position: relative;
   overflow: hidden;
 }
 
-.loading-text::after {
+.interactive-card::after {
   content: '';
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  background: white;
-  animation: typewriter 1s steps(40, end) forwards;
+  top: -120%;
+  left: -40%;
+  width: 60%;
+  height: 260%;
+  transform: rotate(18deg);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 45%,
+    transparent 100%
+  );
+  transition: left 420ms ease;
+  pointer-events: none;
 }
 
-@keyframes typewriter {
-  to {
-    width: 0;
-  }
+.interactive-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(var(--accent-rgb), 0.45);
+  box-shadow:
+    0 30px 60px rgba(2, 2, 6, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-@keyframes glitchSlideIn {
-  0% {
-    transform: translateY(20px);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-  20% {
-    clip-path: polygon(0 20%, 100% 20%, 100% 100%, 0 100%);
-  }
-  40% {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-  60% {
-    clip-path: polygon(0 40%, 100% 40%, 100% 100%, 0 100%);
-  }
-  80% {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-  100% {
-    transform: translateY(0);
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
+.interactive-card:active {
+  transform: translateY(-1px) scale(0.997);
 }
 
-@keyframes spin-slow {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(180deg);
-  }
+.interactive-card:hover::after {
+  left: 120%;
 }
 
-.animate-spin-slow {
-  animation: spin-slow 0.5s linear;
+.timeline-dot {
+  position: absolute;
+  left: -0.7rem;
+  top: 0.75rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 9999px;
+  background: rgb(var(--accent-rgb));
+  box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.17);
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
+@keyframes revealUp {
   from {
     opacity: 0;
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes driftGlow {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(12px, -10px, 0);
+  }
+}
+
+@keyframes cameraFlash {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.85;
+  }
+  22% {
+    opacity: 0.28;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-shell::before,
+  .app-shell::after {
+    width: 14rem;
+    height: 14rem;
+    filter: blur(65px);
   }
 }

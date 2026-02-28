@@ -1,0 +1,35 @@
+<svg width="320" height="287" viewBox="0 0 320 287" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="texeraGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F9AA5" />
+      <stop offset="100%" stop-color="#1B5FBB" />
+    </linearGradient>
+  </defs>
+
+  <rect width="320" height="287" fill="#ECECEC" />
+
+  <g transform="translate(70 20) scale(0.35)">
+    <path d="M235 112C215 108 196 90 191 72C211 73 230 88 240 103C253 85 274 72 298 72C289 91 272 108 250 114L235 112Z" fill="url(#texeraGradient)"/>
+    <circle cx="196" cy="60" r="11" fill="url(#texeraGradient)"/>
+    <circle cx="224" cy="48" r="10" fill="url(#texeraGradient)"/>
+    <circle cx="255" cy="44" r="10" fill="url(#texeraGradient)"/>
+
+    <path d="M308 140C345 165 359 214 336 251C314 286 270 301 229 290C188 279 163 238 165 197C167 154 197 124 238 116C264 111 289 120 308 140Z" fill="url(#texeraGradient)"/>
+
+    <path d="M311 160C331 174 338 200 326 221C313 243 286 252 261 247C241 243 224 230 216 212C209 194 212 172 224 156C241 134 283 140 311 160Z" fill="#ECECEC"/>
+    <path d="M324 171C321 183 312 191 301 193C290 196 278 192 271 183C280 177 293 171 308 169C314 169 319 170 324 171Z" fill="#0D1730"/>
+    <circle cx="293" cy="176" r="5" fill="#ECECEC"/>
+    <path d="M331 196L366 206L334 219L331 196Z" fill="#0D1730"/>
+
+    <path d="M149 336C173 319 204 308 236 306C229 332 213 363 189 389C165 380 152 360 149 336Z" fill="url(#texeraGradient)"/>
+    <path d="M193 392C214 367 231 338 239 306C265 311 291 321 314 337C304 364 284 388 256 405C230 408 208 404 193 392Z" fill="url(#texeraGradient)"/>
+    <path d="M264 406C291 390 311 365 322 338C353 349 381 369 401 396C376 417 343 428 309 428C290 427 275 420 264 406Z" fill="url(#texeraGradient)"/>
+    <path d="M170 278C164 315 174 345 197 372C171 368 146 352 130 328C141 307 154 290 170 278Z" fill="url(#texeraGradient)"/>
+    <path d="M254 286C246 329 259 365 287 397C262 394 239 382 223 362C226 333 236 307 254 286Z" fill="url(#texeraGradient)"/>
+    <path d="M331 308C328 345 342 376 369 400C345 401 322 392 305 376C304 345 313 321 331 308Z" fill="url(#texeraGradient)"/>
+
+    <path d="M192 364C204 364 213 373 213 385C201 385 192 376 192 364Z" fill="#ECECEC" fill-opacity="0.75"/>
+    <path d="M270 387C282 387 291 396 291 408C279 408 270 399 270 387Z" fill="#ECECEC" fill-opacity="0.75"/>
+    <path d="M333 373C344 373 353 382 353 393C342 393 333 384 333 373Z" fill="#ECECEC" fill-opacity="0.75"/>
+  </g>
+</svg>

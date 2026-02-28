@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 interface Element {
   x: number;
@@ -6,13 +6,20 @@ interface Element {
   z: number;
   size: number;
   rotation: number;
-  type: 'text' | 'rectangle' | 'line' | 'dot';
+  type: 'rectangle' | 'line' | 'dot';
   color: string;
   speed: number;
-  wordIndex?: number;
   opacity: number;
   glitchOffset: number;
 }
+
+const COLORS = [
+  '#7C8A97',
+  '#A3BAC5',
+  '#DDE7EA',
+  '#F2E8D5',
+  '#C6D8E3'
+];
 
 export default function Background3D() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -21,48 +28,29 @@ export default function Background3D() {
   const timeRef = useRef<number>(0);
   const isInitializedRef = useRef(false);
 
-  // Original color scheme
-  const colors = [
-    '#FF0000', // Blood red
-    '#8B0000', // Dark red
-    '#4B0082', // Indigo
-    '#FFD700', // Gold
-    '#00FF00', // Neon green
-  ];
-
-  // AWGE-inspired words
-  const words = [
-    'LEADERSHIP', 'INNOVATION', 'EXCELLENCE', 'VISIONARY',
-    'IMPACT', 'GROWTH', 'SUCCESS', 'PIONEER',
-    'DEDICATION', 'AMBITION', 'PURPOSE', 'DRIVE',
-    'PASSION', 'VISION', 'ACHIEVEMENT', 'MOMENTUM',
-    'INFLUENCE', 'PROGRESS', 'DYNAMIC', 'CATALYST'
-  ];
-
-  const initElements = () => {
+  const initElements = useCallback(() => {
     try {
       const elements: Element[] = [];
       const width = document.documentElement.clientWidth;
       const height = document.documentElement.clientHeight;
-      const count = Math.min(25, Math.floor((width * height) / 60000));
+      const area = width * height;
+      const count = Math.max(8, Math.min(28, Math.floor(area / 140000))); // fewer, subtle shapes
 
       for (let i = 0; i < count; i++) {
-        const type = Math.random() > 0.6 ? 'text' :
-                    Math.random() > 0.4 ? 'rectangle' :
-                    Math.random() > 0.2 ? 'line' : 'dot';
-                    
+        const r = Math.random();
+        const type = r > 0.66 ? 'rectangle' : r > 0.33 ? 'line' : 'dot';
+
         elements.push({
           x: (Math.random() - 0.5) * width,
           y: (Math.random() - 0.5) * height,
-          z: Math.random() * 1000 - 500,
-          size: Math.random() * 120 + 20,
+          z: Math.random() * 900 - 450,
+          size: Math.random() * 80 + 12,
           rotation: Math.random() * Math.PI * 2,
           type,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          speed: Math.random() * 0.8 + 0.2,
-          wordIndex: Math.floor(Math.random() * words.length),
-          opacity: Math.random() * 0.5 + 0.5,
-          glitchOffset: Math.random() * 5
+          color: COLORS[Math.floor(Math.random() * COLORS.length)],
+          speed: Math.random() * 0.6 + 0.1,
+          opacity: Math.random() * 0.45 + 0.35,
+          glitchOffset: Math.random() * 3,
         });
       }
       return elements;
@@ -70,81 +58,75 @@ export default function Background3D() {
       console.error('Error initializing elements:', error);
       return [];
     }
-  };
+  }, []);
 
-  const drawElement = (
+  const drawElement = useCallback((
     ctx: CanvasRenderingContext2D,
     element: Element,
     perspective: number,
     time: number
   ) => {
     try {
-      const glitchAmount = Math.sin(time * 2) * element.glitchOffset;
+      const glitchAmount = Math.sin(time * 1.5 + element.z) * element.glitchOffset * 0.5;
+      ctx.lineCap = 'round';
 
       switch (element.type) {
-        case 'rectangle':
+        case 'rectangle': {
+          const w = element.size;
+          const h = Math.max(8, element.size / 3);
           ctx.beginPath();
-          ctx.rect(-element.size/2, -element.size/4, element.size, element.size/2);
+          ctx.rect(-w / 2 + glitchAmount, -h / 2 + glitchAmount, w, h);
           ctx.stroke();
           break;
+        }
 
-        case 'line':
+        case 'line': {
+          const len = element.size;
           ctx.beginPath();
-          ctx.moveTo(-element.size/2, 0);
-          ctx.lineTo(element.size/2, 0);
+          ctx.moveTo(-len / 2 + glitchAmount, 0);
+          ctx.lineTo(len / 2 - glitchAmount, 0);
           ctx.stroke();
           break;
+        }
 
-        case 'dot':
+        case 'dot': {
+          const r = Math.max(1, (element.size * 0.12) * perspective);
           ctx.beginPath();
-          ctx.arc(0, 0, element.size/10, 0, Math.PI * 2);
+          ctx.arc(0 + glitchAmount, 0, r, 0, Math.PI * 2);
           ctx.fill();
           break;
-
-        case 'text':
-          const text = words[element.wordIndex || 0];
-          ctx.font = `bold ${element.size * perspective}px "Space Mono", monospace`;
-          
-          if (Math.random() > 0.95) {
-            ctx.globalAlpha = 0.7;
-            ctx.fillText(text, -ctx.measureText(text).width / 2 + glitchAmount, glitchAmount);
-            ctx.fillText(text, -ctx.measureText(text).width / 2 - glitchAmount, -glitchAmount);
-          }
-          
-          ctx.globalAlpha = element.opacity;
-          ctx.fillText(text, -ctx.measureText(text).width / 2, 0);
-          break;
+        }
       }
     } catch (error) {
       console.error('Error drawing element:', error);
     }
-  };
+  }, []);
 
-  const animate = (timestamp: number) => {
+  const animate = useCallback((timestamp: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    
+
     const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     try {
       timeRef.current = timestamp * 0.001;
 
-      // Original gradient background
+      // Soft neutral gradient background
       const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-      gradient.addColorStop(0, '#1a0000');
-      gradient.addColorStop(1, '#000000');
+      gradient.addColorStop(0, '#F6F8FA'); // very light
+      gradient.addColorStop(1, '#E9EEF2'); // soft cool
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Add subtle noise texture
+      // Very subtle noise texture (kept light)
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imageData.data;
       for (let i = 0; i < data.length; i += 4) {
-        const noise = Math.random() * 5;
-        data[i] += noise;
-        data[i + 1] += noise;
-        data[i + 2] += noise;
+        const noise = (Math.random() - 0.5) * 6; // smaller variance
+        data[i] = Math.min(255, data[i] + noise);
+        data[i + 1] = Math.min(255, data[i + 1] + noise);
+        data[i + 2] = Math.min(255, data[i + 2] + noise);
       }
       ctx.putImageData(imageData, 0, 0);
 
@@ -153,29 +135,33 @@ export default function Background3D() {
       sortedElements.forEach((element) => {
         ctx.save();
 
-        const scale = 1 + element.z / 1000;
-        const perspective = Math.max(0.1, 1 - Math.abs(element.z) / 1000);
-        
-        element.z += Math.sin(timeRef.current + element.x) * element.speed * 0.5;
-        element.x += Math.cos(timeRef.current * 0.3) * element.speed * 0.3;
-        element.y += Math.sin(timeRef.current * 0.5) * element.speed * 0.3;
-        element.rotation += 0.005 * element.speed;
+        const scale = 1 + element.z / 1200;
+        const perspective = Math.max(0.12, 1 - Math.abs(element.z) / 1200);
 
-        if (element.x < -canvas.width/2) element.x = canvas.width/2;
-        if (element.x > canvas.width/2) element.x = -canvas.width/2;
-        if (element.y < -canvas.height/2) element.y = canvas.height/2;
-        if (element.y > canvas.height/2) element.y = -canvas.height/2;
+        // Gentle organic motion
+        element.z += Math.sin(timeRef.current * 0.7 + element.x * 0.001) * element.speed * 0.2;
+        element.x += Math.cos(timeRef.current * 0.25) * element.speed * 0.25;
+        element.y += Math.sin(timeRef.current * 0.35) * element.speed * 0.22;
+        element.rotation += 0.003 * element.speed;
 
-        ctx.translate(canvas.width/2 + element.x, canvas.height/2 + element.y);
+        // wrap-around bounds
+        if (element.x < -canvas.width / 2) element.x = canvas.width / 2;
+        if (element.x > canvas.width / 2) element.x = -canvas.width / 2;
+        if (element.y < -canvas.height / 2) element.y = canvas.height / 2;
+        if (element.y > canvas.height / 2) element.y = -canvas.height / 2;
+
+        ctx.translate(canvas.width / 2 + element.x, canvas.height / 2 + element.y);
         ctx.rotate(element.rotation);
         ctx.scale(scale, scale);
 
+        // softer stroke and fill for light background
         ctx.strokeStyle = element.color;
         ctx.fillStyle = element.color;
-        ctx.lineWidth = 1;
-        ctx.globalAlpha = element.opacity * perspective;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = element.color;
+        ctx.lineWidth = Math.max(0.6, 1 * perspective);
+        ctx.globalAlpha = element.opacity * Math.min(1, perspective + 0.15);
+        ctx.shadowBlur = 8 * perspective;
+        // subtle shadow color with low alpha for a gentle depth
+        ctx.shadowColor = element.color + '20';
 
         drawElement(ctx, element, perspective, timeRef.current);
 
@@ -189,7 +175,7 @@ export default function Background3D() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     }
-  };
+  }, [drawElement]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -214,7 +200,7 @@ export default function Background3D() {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, []);
+  }, [animate, initElements]);
 
   return (
     <canvas
@@ -225,9 +211,9 @@ export default function Background3D() {
         left: 0,
         width: '100%',
         height: '100%',
-        background: '#000000',
         zIndex: -1,
-        opacity: 0.7,
+        opacity: 1,
+        pointerEvents: 'none',
       }}
     />
   );
